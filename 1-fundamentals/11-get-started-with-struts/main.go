@@ -15,6 +15,5 @@ func main() {
 		Ativo: true,
 	}
 	bruno.Ativo = false
-	fmt.Printf("Nome: %s, Idade: %d, Ativo: %t", bruno.Nome, bruno.Idade, bruno.Ativo)
+	fmt.Printf("Nome: %s, Idade: %d, Ativo: %t\n", bruno.Nome, bruno.Idade, bruno.Ativo)
 }
-
