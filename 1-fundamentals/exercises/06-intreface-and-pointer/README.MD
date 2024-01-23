@@ -1,0 +1,3 @@
+# Exercise 6: Interface and Pointer
+    **Task**: Define an interface `Shape` with a method `Area()`. Implement this interface in two structs: `Circle` and `Rectangle`. Ensure that your method implementations use pointer receivers.
+    **Hint**: The `Area` method for `Circle` and `Rectangle` should use the specific formulae for those shapes. The pointer receiver ensures that even if you pass a struct, it will be converted to a pointer.
