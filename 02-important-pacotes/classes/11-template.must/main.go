@@ -1,0 +1,20 @@
+package main
+
+import (
+	"html/template"
+	"os"
+)
+
+type Curso struct {
+	Nome         string
+	CargaHoraria int
+}
+
+func main() {
+	curso := Curso{"Go", 40}
+	t := template.Must(template.New("CursoTemplate").Parse("Curso: {{.Nome}}\nCarga Horária: {{.CargaHoraria}} horas\n"))
+	err := t.Execute(os.Stdout, curso)
+	if err != nil {
+		panic(err)
+	}
+}
