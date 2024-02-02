@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Template Go</title>
+</head>
+<body>
+    <h1>Cursos</h1>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Horas</th>
+        </tr>
+        {{range .}}
+            {{ if eq .Nome "Golang" }}
+            <tr>
+                <td>{{.Nome}}</td>
+                <td>{{.CargaHoraria}}</td>
+            </tr>
+            {{end}}
+        {{end}}
+    </table>
+</body>
+</html>
