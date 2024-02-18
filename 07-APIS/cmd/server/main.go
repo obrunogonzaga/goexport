@@ -11,6 +11,7 @@ import (
 	"github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/internal/infra/webserver/handlers"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"log"
 	"net/http"
 )
 
@@ -35,6 +36,8 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Use(LogRequest)
+	r.Use(middleware.Recoverer)
 
 	r.Route("/products", func(r chi.Router) {
 		r.Use(jwtauth.Verifier(cfg.TokenAuth))
@@ -50,4 +53,13 @@ func main() {
 	r.Post("/users/generateToken", userHandler.GetJwt)
 
 	http.ListenAndServe(":8000", r)
+}
+
+// LogRequest Criando um middleware
+func LogRequest(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// r.Context().Value("user") poderia pegar valores do contexto
+		log.Println(r.Method, r.URL)
+		next.ServeHTTP(w, r)
+	})
 }
