@@ -30,7 +30,7 @@ func main() {
 	productHandler := handlers.NewProductHandler(productDB)
 
 	userDB := database.NewUser(db)
-	userHandler := handlers.NewUserHandler(userDB)
+	userHandler := handlers.NewUserHandler(userDB, cfg.TokenAuth, cfg.JWTExpiresIn)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -41,6 +41,7 @@ func main() {
 	r.Delete("/products/{id}", productHandler.DeleteProduct)
 
 	r.Post("/users", userHandler.Create)
+	r.Post("/users/generateToken", userHandler.GetJwt)
 
 	http.ListenAndServe(":8000", r)
 }
