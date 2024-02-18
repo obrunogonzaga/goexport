@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/configs"
 	"github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/internal/entity"
 	"github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/internal/infra/database"
@@ -27,6 +29,13 @@ func main() {
 	productDB := database.NewProduct(db)
 	productHandler := handlers.NewProductHandler(productDB)
 
-	http.HandleFunc("/products", productHandler.CreateProduct)
-	http.ListenAndServe(":8000", nil)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Post("/products", productHandler.CreateProduct)
+	r.Get("/products/{id}", productHandler.GetProduct)
+	r.Get("/products", productHandler.GetProducts)
+	r.Put("/products/{id}", productHandler.UpdateProduct)
+	r.Delete("/products/{id}", productHandler.DeleteProduct)
+
+	http.ListenAndServe(":8000", r)
 }
