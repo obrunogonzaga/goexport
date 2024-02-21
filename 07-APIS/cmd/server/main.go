@@ -6,15 +6,35 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/jwtauth"
 	"github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/configs"
+	_ "github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/docs"
 	"github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/internal/entity"
 	"github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/internal/infra/database"
 	"github.com/obrunogonzaga/pos-go-expert/07-APIS/07-APIS/internal/infra/webserver/handlers"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
+// @title 			Go Expert API de Produtos
+// @version 		1.0
+// @description 	Product API with authentication
+// @termsOfService 	http://swagger.io/terms/
+
+// @contact.name 	Bruno Gonzaga
+// @contact.url 	http://www.brunogonzaga.dev
+// @contact.email 	brunog86@gmail.com
+
+// @license.name 	MIT
+// @license.url 	http://mit.com
+
+// @host			localhost:8000
+// @BasePath /
+
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	cfg, err := configs.LoadConfig(".")
 	if err != nil {
@@ -51,6 +71,8 @@ func main() {
 
 	r.Post("/users", userHandler.Create)
 	r.Post("/users/generateToken", userHandler.GetJwt)
+
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/docs/doc.json")))
 
 	http.ListenAndServe(":8000", r)
 }
