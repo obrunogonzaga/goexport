@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+type Error struct {
+	Message string `json:"message"`
+}
+
 type UserHandler struct {
 	UserDB        database.UserInterface
 	JWT           *jwtauth.JWTAuth
@@ -56,6 +60,16 @@ func (h *UserHandler) GetJwt(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(accessToken)
 }
 
+// Create user godoc
+// @Summary 	Create a user
+// @Description Create a user
+// @Tags 		users
+// @Accept		json
+// @Produce		json
+// @Param		request		body 	dto.CreateUserInput		true	"user request"
+// @Success		201
+// @Failure		500	{object} Error
+// @Router		/users [post]
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var user dto.CreateUserInput
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -66,11 +80,15 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	u, err := entity.NewUser(user.Name, user.Email, user.Password)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		errorMessage := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(errorMessage)
 		return
 	}
 	err = h.UserDB.Create(u)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		errorMessage := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(errorMessage)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
