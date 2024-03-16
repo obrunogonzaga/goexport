@@ -8,4 +8,5 @@ import "github.com/obrunogonzaga/pos-go-expert/11-GraphQL/internal/database"
 
 type Resolver struct {
 	CategoryDB *database.Category
+	CourseDB   *database.Course
 }
