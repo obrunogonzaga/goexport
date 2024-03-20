@@ -6,6 +6,7 @@ import (
 	"github.com/obrunogonzaga/pos-go-expert/12-gRPC/internal/pb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"io"
 )
 
 type CategoryService struct {
@@ -63,4 +64,56 @@ func (c *CategoryService) GetCategory(ctx context.Context, in *pb.CategoryGetReq
 	}
 
 	return &pb.CategoryResponse{Category: categoryResponse}, nil
+}
+
+func (c *CategoryService) CreateCategoryStream(stream pb.CategoryService_CreateCategoryStreamServer) error {
+	categories := &pb.CategoryList{}
+
+	for {
+		category, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(categories)
+		}
+		if err != nil {
+			return status.Errorf(codes.Internal, "Error receiving category: %v", err)
+		}
+
+		categoryResult, err := c.CategoryDB.Create(category.GetName(), category.GetDescription())
+		if err != nil {
+			return status.Errorf(codes.Internal, "Error creating category: %v", err)
+		}
+
+		categories.Categories = append(categories.Categories, &pb.Category{
+			Id:          categoryResult.ID,
+			Name:        categoryResult.Name,
+			Description: categoryResult.Description,
+		})
+	}
+}
+
+func (c *CategoryService) CreateCategoryStreamBidirectional(stream pb.CategoryService_CreateCategoryStreamBidirectionalServer) error {
+	for {
+		category, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return status.Errorf(codes.Internal, "Error receiving category: %v", err)
+		}
+
+		categoryResult, err := c.CategoryDB.Create(category.GetName(), category.GetDescription())
+		if err != nil {
+			return status.Errorf(codes.Internal, "Error creating category: %v", err)
+		}
+
+		categoryResponse := &pb.Category{
+			Id:          categoryResult.ID,
+			Name:        categoryResult.Name,
+			Description: categoryResult.Description,
+		}
+
+		if err := stream.Send(&pb.CategoryResponse{Category: categoryResponse}); err != nil {
+			return status.Errorf(codes.Internal, "Error sending category: %v", err)
+		}
+	}
 }
