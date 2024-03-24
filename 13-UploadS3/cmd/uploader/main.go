@@ -25,8 +25,8 @@ func init() {
 		config.WithCredentialsProvider(
 			aws.NewCredentialsCache(
 				credentials.NewStaticCredentialsProvider(
-					"AKIAVLUXJNQ3ZMB7AKFF",
-					"TzCxePYiS1gA/+Xb5vFpf5mUEllxQlB/CTm0Pj3P",
+					"",
+					"",
 					""))),
 	)
 	if err != nil {
