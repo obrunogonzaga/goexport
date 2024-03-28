@@ -12,6 +12,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type RunEFunc func(cmd *cobra.Command, args []string) error
+
 func GetDb() *sql.DB {
 	db, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
@@ -20,8 +22,8 @@ func GetDb() *sql.DB {
 	return db
 }
 
-func GetCatergoryDB(db *sql.DB) *database.Category {
-	return database.NewCategory(db)
+func GetCatergoryDB(db *sql.DB) database.Category {
+	return *database.NewCategory(db)
 }
 
 // rootCmd represents the base command when called without any subcommands
