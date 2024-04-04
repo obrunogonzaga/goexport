@@ -24,7 +24,7 @@ func NewCategoryRepository(dtb *sql.DB) *CategoryRepository {
 	}
 }
 
-func (r *CategoryRepository) Insert(ctx context.Context, category *entity.Category) error {
+func (r *CategoryRepository) Insert(ctx context.Context, category entity.Category) error {
 	return r.Queries.CreateCategory(ctx, db.CreateCategoryParams{
 		Name: category.Name,
 	})
