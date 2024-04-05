@@ -50,18 +50,18 @@ func (a *AddCourseUsecaseUow) Execute(ctx context.Context, input InputUsecase) e
 	})
 }
 
-func (a *AddCourseUsecaseUow) getCategoryRepository(ctx context.Context) repository.CategoryRepository {
+func (a *AddCourseUsecaseUow) getCategoryRepository(ctx context.Context) *repository.CategoryRepository {
 	repo, err := a.Uow.GetRepository(ctx, "category")
 	if err != nil {
 		panic(err)
 	}
-	return repo.(repository.CategoryRepository)
+	return repo.(*repository.CategoryRepository)
 }
 
-func (a *AddCourseUsecaseUow) getCourseRepository(ctx context.Context) repository.CourseRepository {
+func (a *AddCourseUsecaseUow) getCourseRepository(ctx context.Context) *repository.CourseRepository {
 	repo, err := a.Uow.GetRepository(ctx, "course")
 	if err != nil {
 		panic(err)
 	}
-	return repo.(repository.CourseRepository)
+	return repo.(*repository.CourseRepository)
 }
